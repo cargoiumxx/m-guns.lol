@@ -13,6 +13,7 @@ function initMedia() {
   
   // Initialize volume properly
   backgroundMusic.volume = volumeSlider.value = 0.3;
+  document.documentElement.style.setProperty('--volume-percent', '30%');
   backgroundVideo.muted = true;
 
   backgroundVideo.play().catch(err => {
@@ -89,19 +90,42 @@ document.addEventListener('DOMContentLoaded', () => {
       cursor.style.display = 'none'; 
     });
   } else {
-
-    document.addEventListener('mousemove', (e) => {
-      cursor.style.left = e.clientX + 'px';
-      cursor.style.top = e.clientY + 'px';
+    let cursorX = 0, cursorY = 0;
+    let targetX = 0, targetY = 0;
+    
+    // Smooth cursor with interpolation
+    function updateCursor() {
+      cursorX += (targetX - cursorX) * 0.18;
+      cursorY += (targetY - cursorY) * 0.18;
+      
+      cursor.style.left = cursorX + 'px';
+      cursor.style.top = cursorY + 'px';
       cursor.style.display = 'block';
+      
+      requestAnimationFrame(updateCursor);
+    }
+    
+    document.addEventListener('mousemove', (e) => {
+      targetX = e.clientX;
+      targetY = e.clientY;
     });
+    
+    // Initialize cursor animation loop
+    requestAnimationFrame(updateCursor);
 
+    // Cursor click state
     document.addEventListener('mousedown', () => {
-      cursor.style.transform = 'scale(0.8) translate(-50%, -50%)';
+      cursor.classList.add('click');
     });
 
     document.addEventListener('mouseup', () => {
-      cursor.style.transform = 'scale(1) translate(-50%, -50%)';
+      cursor.classList.remove('click');
+    });
+    
+    // Cursor hover state for interactive elements
+    document.querySelectorAll('a, button, .social-icon, .badge, input, [role="button"]').forEach(el => {
+      el.addEventListener('mouseenter', () => cursor.classList.add('hover'));
+      el.addEventListener('mouseleave', () => cursor.classList.remove('hover'));
     });
   }
 
@@ -309,6 +333,8 @@ document.addEventListener('DOMContentLoaded', () => {
     currentAudio.volume = volumeSlider.value;
     isMuted = false;
     currentAudio.muted = false;
+    const volumePercent = Math.round(volumeSlider.value * 100) + '%';
+    document.documentElement.style.setProperty('--volume-percent', volumePercent);
     volumeIcon.innerHTML = `<path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.536 8.464a5 5 0 010 7.072m2.828-9.9a9 9 0 010 12.728M5.586 15H4a1 1 0 01-1-1v-4a1 1 0 011-1h1.586l4.707-4.707C10.923 3.663 12 4.109 12 5v14c0 .891-1.077 1.337-1.707.707L5.586 15z"></path>`;
   });
 
