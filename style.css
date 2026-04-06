@@ -19,7 +19,7 @@ body {
   overflow-x: hidden;
   overflow-y: auto;
   perspective: 1000px;
-  cursor: none;
+  cursor: url('assets/cursor.cur'), default;
 }
 
 
@@ -36,6 +36,19 @@ body {
   transform: translate(-50%, -50%);
   will-change: left, top, transform;
   backface-visibility: hidden;
+}
+
+/* Native CUR file cursor overrides */
+body.use-native-cursor {
+  cursor: url('assets/cursor.cur'), default;
+}
+
+body.use-native-cursor .custom-cursor {
+  display: none;
+}
+
+body.use-native-cursor * {
+  cursor: url('assets/pointer.cur'), pointer;
 }
 
 .custom-cursor.hover {

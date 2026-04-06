@@ -704,5 +704,21 @@ document.addEventListener('DOMContentLoaded', () => {
   });
 
 
+  // Native CUR file cursor support
+  const nativeCursorToggle = document.getElementById('native-cursor-toggle');
+  if (nativeCursorToggle) {
+    nativeCursorToggle.addEventListener('click', () => {
+      document.body.classList.toggle('use-native-cursor');
+      nativeCursorToggle.classList.toggle('active');
+      localStorage.setItem('nativeCursorEnabled', document.body.classList.contains('use-native-cursor'));
+    });
+
+    // Load saved preference
+    if (localStorage.getItem('nativeCursorEnabled') === 'true') {
+      document.body.classList.add('use-native-cursor');
+      nativeCursorToggle.classList.add('active');
+    }
+  }
+
   typeWriterStart();
 });
